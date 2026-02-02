@@ -1,2 +1,2 @@
-# Analisis-de-inventario-de-producto
-Análisis de inventario de productos clasificados por género
+# Analisis de inventario de producto
+Análisis de inventario de productos clasificados por género y otro tipo de data
