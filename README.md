@@ -5,6 +5,6 @@ Análisis de inventario de productos clasificados por género y otro tipo de dat
 Radames Montiel         
 Rafael Ferrer          
 
-Profesores
+# Profesores
 Jesus Ochoa
 Oliver Triveño
