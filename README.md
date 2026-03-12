@@ -2,9 +2,9 @@
 Análisis de inventario de productos clasificados por género y otro tipo de data
 
 # Alumnos               
-Radames Montiel         
+Radames Montiel        
 Rafael Ferrer          
 
 # Profesores
-Jesus Ochoa
-Oliver Triveño
+Jesus Ochoa        
+Oliver Triveño        
