@@ -1,5 +1,5 @@
 # Analisis de inventario de producto
-Análisis de inventario de productos clasificados por género y otro tipo de data
+Impacto de las Caracteristicas del cliente en la Facturación
 
 # Alumnos               
 Radames Montiel        
