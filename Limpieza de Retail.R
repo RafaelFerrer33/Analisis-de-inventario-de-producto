@@ -1,4 +1,5 @@
 library(readr)
+library(tidyverse)
 datos_retail <- read_csv("venta-minorista.csv")
 
 # Buscando datos nulos y duplicados
@@ -32,3 +33,9 @@ table(datos_retail$`Product Category`)
 library(lubridate)
 datos_retail$Date <- ymd(datos_retail$Date)
 class(datos_retail$Date)
+
+datos_limpios <- datos_retail %>% 
+  drop_na() %>% 
+  distinct()
+
+write.csv(datos_limpios, "retail_limpio.csv", row.names = FALSE)
