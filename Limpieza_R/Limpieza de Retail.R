@@ -34,8 +34,32 @@ library(lubridate)
 datos_retail$Date <- ymd(datos_retail$Date)
 class(datos_retail$Date)
 
-datos_limpios <- datos_retail %>% 
-  drop_na() %>% 
+# Cambiando el nombre de las variables a español
+
+datos_retail <- datos_retail %>%
+  rename(
+    ID_Transaccion = `Transaction ID`,
+    Fecha = Date,
+    Cliente_ID = `Customer ID`,
+    Genero = Gender,
+    Edad = Age,
+    Categoria_producto = `Product Category`,
+    Cantidad = Quantity,
+    Precio_por_cantidad = `Price per Unit`,
+    Monto_total = `Total Amount`
+  )
+
+datos_retail <- datos_retail %>%
+  mutate(Genero = case_match(Genero,
+                           "Female" ~ "Mujer",
+                         "Male" ~ "Hombre"),
+         Categoria_producto = case_match(Categoria_producto,
+                                         "Clothing" ~ "Ropa",
+                                         "Electronics" ~ "Electronica",
+                                         "Beauty" ~ "Belleza"))
+
+datos_limpios <- datos_retail %>%
+  drop_na() %>%
   distinct()
 
 write.csv(datos_limpios, "retail_limpio.csv", row.names = FALSE)
