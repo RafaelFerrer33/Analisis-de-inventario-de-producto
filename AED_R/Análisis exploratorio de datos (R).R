@@ -16,7 +16,7 @@ ticket_m <- retail %>%
 
 estadisticas_descriptivas_h <- ticket_h %>%
   summarise(across(
-    c(Cantidad, Precio_por_unidad, Monto_total),
+    c(Cantidad, Precio_por_cantidad, Monto_total),
     list(
       media = \(x) mean(x),
       mediana = \(x) median(x),
@@ -27,7 +27,7 @@ print(estadisticas_descriptivas_h)
 
 estadisticas_descriptivas_m <- ticket_m %>%
   summarise(across(
-    c(Cantidad, Precio_por_unidad, Monto_total),
+    c(Cantidad, Precio_por_cantidad, Monto_total),
     list(
       media = \(x) mean(x),
       mediana = \(x) median(x),
@@ -188,5 +188,159 @@ ggplot(retail,
     panel.grid.major.x = element_blank()
   )
 
+# Objetivo 2
 
-         
+# Separamos los grupos de edad para analizar cada segmento etario
+
+max(retail$Edad)
+min(retail$Edad)
+
+cortes <- c(18, 27, 36, 45, 54, 64)
+etiquetas <- c("Adulto joven (18-26)",
+               "Adulto (27-35)",
+               "Adulto Maduro (36-43)",
+               "Mediana edad (44-53)",
+               "Adulto Mayor (54-64)")
+
+retail["Rango_edad"] <- cut(retail$Edad,
+                   breaks = cortes,
+                   labels = etiquetas,
+                   include.lowest = TRUE)
+
+table(retail$Rango_edad)
+
+# Gráfico de barras para analizar el gasto acumulado por segmento etario
+
+ggplot(retail,
+       aes(x = Rango_edad,
+           y = Monto_total,
+           fill = Rango_edad)) +
+  geom_col() +
+  scale_y_continuous(
+    labels = scales::label_dollar(bigmark = ","),
+    expand = expansion(mult = c(0, 0.20))
+  ) +
+  scale_fill_manual(
+    values = c("Adulto joven (18-26)" = "#152b45", 
+               "Adulto (27-35)" = "#183557",
+               "Adulto Maduro (36-43)" = "#19406e",
+               "Mediana edad (44-53)" = "#1759a6",
+               "Adulto Mayor (54-64)" = "#096fe6") 
+  ) +
+  labs(title = "Gasto acumulado por grupo de edad",
+       subtitle = "Gasto acumulado en el año 2023 por segmento Etario",
+       x = "Segmento Etario",
+       y = "Total gastado",
+       fill = "Rangos de edad:") +
+  theme_minimal() + 
+  theme(
+    plot.title.position = "plot",
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5, color = "#081a26"),
+    plot.subtitle = element_text(face = "bold", size = 12, hjust = 0.5, color = "#0c293d"),
+    
+    legend.position = "bottom",
+    legend.title = element_text(size = 9, face = "bold"),
+    legend.text = element_text(size = 9, face = "bold"),
+    legend.box.spacing = unit(0, "pt"),
+    
+    axis.title.y = element_text(face = "bold", size = 12),
+    axis.title.x = element_text(face = "bold", size = 12),
+    axis.text.x = element_text(color = "black"),
+    
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE, title.position = "left")) # Para que la leyenda ocupe 2 filas de espacio
+
+retail$Fecha = as.Date(retail$Fecha)
+class(retail$Fecha)
+
+# Segundo grafico
+
+# Hacemos un nuevo df que tenga todos el gasto acumulado por los grupos etarios por mes
+
+retail$Fecha = as.Date(retail$Fecha)
+class(retail$Fecha)
+
+datos_mensual <- retail %>%
+  mutate(mes = floor_date(Fecha, "month")) %>%
+  group_by(mes, Rango_edad) %>%
+  summarise(gasto_por_mes = sum(Monto_total), .groups = "drop")
+ 
+ggplot(datos_mensual,
+       aes(x = mes,
+           y = gasto_por_mes,
+           color = Rango_edad)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = scales::label_dollar(bigmark = ",")) +
+  scale_x_date(
+    date_labels = "%b",
+    date_breaks = "1 month") + # Para que el grafico solo evalue el gasto acumulado al final de mes
+  scale_color_manual(
+    values = c("Adulto joven (18-26)" = "#16242e", 
+               "Adulto (27-35)" = "#29485e",
+               "Adulto Maduro (36-43)" = "#30658a",
+               "Mediana edad (44-53)" = "#367fb3",
+               "Adulto Mayor (54-64)" = "#43a2e6")
+  ) +
+  labs(title = "Tendencia de compras mensuales por segmento Etario",
+       subtitle = "Análisis de compra mensuales acumuladas por segmento Etario en el años 2023",
+       x = "Mes",
+       y = "Gasto acumulado",
+       color = "Rangos de edad") +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5, color = "#081a26"),
+    plot.subtitle = element_text(face = "bold", size = 12, hjust = 0.5, color = "#152d4f"),
+    
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold", size = 9),
+    legend.text = element_text(face = "bold", size = 9),
+    legend.box.spacing = unit(0, "pt"),
+    
+    axis.title.y = element_text(face = "bold", size = 12),
+    axis.title.x = element_text(face = "bold", size = 12),
+    axis.text = element_text(color = "black")
+  ) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, title.position = "left"))
+
+# Tercer grafico:
+
+ggplot(retail,
+       aes(x = Rango_edad,
+           y = Monto_total,
+           fill = Rango_edad)) +
+  geom_boxplot(color = "black") + 
+  scale_y_continuous(labels = scales::label_dollar(bigmark = ",")) +
+  scale_fill_manual(
+    values = c("Adulto joven (18-26)" = "#003F5D", 
+               "Adulto (27-35)" = "#00527C",
+               "Adulto Maduro (36-43)" = "#00609C",
+               "Mediana edad (44-53)" = "#006DB2",
+               "Adulto Mayor (54-64)" = "#4E97D1")
+  ) + 
+  labs(title = "Distribución de gasto acumulado por segmento Etario",
+       subtitle = "Análisis de la distribución del gasto acumulado por grupo Etario en el año 2023",
+       y = "Gasto acumulado",
+       fill = "Rangos de edad:") +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5, color = "#182942"),
+    plot.subtitle = element_text(face = "bold", size = 12, hjust = 0.5, color = "#152d4f"),
+    
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold", size = 9),
+    legend.text = element_text(face = "bold", size = 9),
+    legend.box.spacing = unit(0, "pt"),
+    
+    axis.title.y = element_text(face = "bold", size = 12),
+    axis.title.x = element_text(face = "bold", size = 12),
+    axis.text = element_text(color = "black"),
+    
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE, title.position = "left"))
