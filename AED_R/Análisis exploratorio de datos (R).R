@@ -267,9 +267,19 @@ datos_mensual <- retail %>%
   group_by(mes, Rango_edad) %>%
   summarise(gasto_por_mes = sum(Monto_total), .groups = "drop")
  
+# Para evaluar el gasto acumulado:
+
+datos_mensual <- datos_mensual %>%
+  arrange(mes) %>%
+  group_by(Rango_edad) %>%
+  mutate(Gasto_acumulado = cumsum(gasto_por_mes)) %>%
+  ungroup() %>%
+  filter(mes != "2024-01-01")
+
+
 ggplot(datos_mensual,
        aes(x = mes,
-           y = gasto_por_mes,
+           y = Gasto_acumulado,
            color = Rango_edad)) +
   geom_line() +
   geom_point() +
@@ -278,14 +288,14 @@ ggplot(datos_mensual,
     date_labels = "%b",
     date_breaks = "1 month") + # Para que el grafico solo evalue el gasto acumulado al final de mes
   scale_color_manual(
-    values = c("Adulto joven (18-26)" = "#16242e", 
-               "Adulto (27-35)" = "#29485e",
-               "Adulto Maduro (36-43)" = "#30658a",
-               "Mediana edad (44-53)" = "#367fb3",
-               "Adulto Mayor (54-64)" = "#43a2e6")
+    values = c("Adulto joven (18-26)" = "#283D3B", 
+               "Adulto (27-35)" = "#197278",
+               "Adulto Maduro (36-43)" = "#C4A08C",
+               "Mediana edad (44-53)" = "#C44536",
+               "Adulto Mayor (54-64)" = "#501C15")
   ) +
-  labs(title = "Tendencia de compras mensuales por segmento Etario",
-       subtitle = "Análisis de compra mensuales acumuladas por segmento Etario en el años 2023",
+  labs(title = "Tendencia de compras mensuales acumuladas por segmento Etario",
+       subtitle = "Análisis de compra mensuales acumuladas por segmento Etario en el año 2023",
        x = "Mes",
        y = "Gasto acumulado",
        color = "Rangos de edad") +
@@ -344,3 +354,6 @@ ggplot(retail,
     panel.grid.major.x = element_blank()
   ) +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE, title.position = "left"))
+
+# Tercer Objetivo
+
