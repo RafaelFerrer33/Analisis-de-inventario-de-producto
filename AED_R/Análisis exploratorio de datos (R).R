@@ -1,5 +1,6 @@
 library(tidyverse)
 library(readr)
+library(knitr)
 
 retail <- read.csv("retail_limpio.csv")
 
@@ -111,26 +112,21 @@ ggplot(retail,
   
   theme_minimal() + 
   theme(
-    
-    # Ajustes al titulo y al subtitulo para que sea más legible
     plot.title.position = "plot",
     plot.title = element_text(face = "bold", hjust = 0.5, color = "#2c3e50", size = 20),
     plot.subtitle = element_text(face = "bold", hjust = 0.5, color = "gray20", size = 14),
     
-    # Ajustando a la leyenda para dejar más espacio al gráfico
     legend.position = "bottom",
     legend.title = element_text(size = 12, face = "bold"),
     legend.text = element_text(size = 12, face = "bold"),
     legend.box.spacing = unit(0, "pt"),
-    
-    # Ajustes a las etiquetas "Hombre" y "Mujer" para que sean más legibles
+
     strip.background = element_rect(fill = "#babbcf", color = NA),
     strip.text = element_text(face = "bold", size = 12),
     
     panel.grid.minor = element_blank(),
     panel.grid.major.y = element_blank(),
-    
-    # Ajustes al texto de los ejes para la limpieza visual
+
     axis.title.y = element_text(size = 14, face = "bold"),
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank())
@@ -141,13 +137,8 @@ ggplot(retail,
        aes(x = Monto_total,
            fill = Genero
            )) +
-  
   geom_density(adjust = 1.5, color = NA) +
-  
-  # Facetas
   facet_wrap(~Genero) +
-  
-  # Ajuste en las escalas
   scale_x_continuous(
     labels = scales::label_dollar(big.mark = ",")
   ) +
@@ -160,29 +151,23 @@ ggplot(retail,
        x = "Gasto total") +
   theme_minimal() + 
   theme(
-    
-    # Ajuste al título para que esté más centrado y más legible
     plot.title.position = "plot",
     plot.title = element_text(face = "bold", size = 15, hjust = 0.5, color = "#2c3e50"),
     plot.subtitle = element_text(face = "bold", size = 13, hjust = 0.5, color = "gray20"),
     
-    # Ajustando la leyenda para abajo para darle más espacio al gráfico
     legend.position = "bottom",
     legend.title = element_text(size = 12, face = "bold"),
     legend.text = element_text(size = 12, face = "bold"),
     legend.box.spacing = unit(0, "pt"),
     
-    # Ajustando las etiquetas para la limpieza visual
     strip.background = element_rect(fill = "#babbcf", color = NA),
     strip.text = element_text(size = 10, face = "bold"),
-    
-    # Ajustando los titulos y textos en "x" y "y" para la limpieza visual
+
     axis.text.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 15, face = "bold", margin = margin(r = 10)),
     axis.title.x = element_text(size = 15, face = "bold", margin = margin(t = 10)),
-    
-    # Eliminando las lineas horizontales y verticales para una mejor claridad visual
+
     panel.grid.major.y = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
@@ -209,6 +194,42 @@ retail["Rango_edad"] <- cut(retail$Edad,
 
 table(retail$Rango_edad)
 
+# Para ver quien representa un mayor porcentaje de gasto
+
+porcentaje__ventas_edad <- retail %>%
+  group_by(Rango_edad) %>%
+  summarise(gasto_por_segmento = sum(Monto_total)) %>%
+  mutate(Porcentaje = (gasto_por_segmento / sum(gasto_por_segmento)) * 100) %>%
+  arrange(desc(Porcentaje))
+
+
+# Hacemos un nuevo df que tenga todos el gasto acumulado por los grupos etarios por mes
+
+retail$Fecha = as.Date(retail$Fecha)
+class(retail$Fecha)
+
+datos_mensual <- retail %>%
+  mutate(mes = floor_date(Fecha, "month")) %>%
+  group_by(mes, Rango_edad) %>%
+  summarise(gasto_por_mes = sum(Monto_total), .groups = "drop")
+
+# Para evaluar el gasto acumulado:
+
+datos_mensual <- datos_mensual %>%
+  arrange(mes) %>%
+  group_by(Rango_edad) %>%
+  mutate(Gasto_acumulado = cumsum(gasto_por_mes)) %>%
+  ungroup() %>%
+  filter(mes != "2024-01-01")
+
+# Tabla para visualizar los porcentajes y el gasto exacto
+
+kable(porcentaje__ventas_edad, 
+      digits = 2, 
+      format.args = list(big.mark = ","), 
+      caption = "Distribución del Gasto Total y Porcentual por Segmento Etario",
+      col.names = c("Rango de Edad", "Gasto Total ($)", "Participación (%)"))
+
 # Gráfico de barras para analizar el gasto acumulado por segmento etario
 
 ggplot(retail,
@@ -217,9 +238,10 @@ ggplot(retail,
            fill = Rango_edad)) +
   geom_col() +
   scale_y_continuous(
-    labels = scales::label_dollar(bigmark = ","),
+    labels = scales::dollar_format(bigmark = ","),
     expand = expansion(mult = c(0, 0.20))
   ) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.1))) + # Para separar más los textos de abajo
   scale_fill_manual(
     values = c("Adulto joven (18-26)" = "#152b45", 
                "Adulto (27-35)" = "#183557",
@@ -238,14 +260,12 @@ ggplot(retail,
     plot.title = element_text(face = "bold", size = 15, hjust = 0.5, color = "#081a26"),
     plot.subtitle = element_text(face = "bold", size = 12, hjust = 0.5, color = "#0c293d"),
     
-    legend.position = "bottom",
-    legend.title = element_text(size = 9, face = "bold"),
-    legend.text = element_text(size = 9, face = "bold"),
-    legend.box.spacing = unit(0, "pt"),
+    legend.position = "none",
     
-    axis.title.y = element_text(face = "bold", size = 12),
-    axis.title.x = element_text(face = "bold", size = 12),
-    axis.text.x = element_text(color = "black"),
+    axis.title.y = element_text(face = "bold", size = 15),
+    axis.title.x = element_text(face = "bold", size = 15, margin = margin(t = 10)),
+    axis.text = element_text(color = "black"),
+    axis.text.x = element_text(color = "black", size = 10),
     
     panel.grid.major.x = element_blank(),
     panel.grid.minor = element_blank()
@@ -256,26 +276,6 @@ retail$Fecha = as.Date(retail$Fecha)
 class(retail$Fecha)
 
 # Segundo grafico
-
-# Hacemos un nuevo df que tenga todos el gasto acumulado por los grupos etarios por mes
-
-retail$Fecha = as.Date(retail$Fecha)
-class(retail$Fecha)
-
-datos_mensual <- retail %>%
-  mutate(mes = floor_date(Fecha, "month")) %>%
-  group_by(mes, Rango_edad) %>%
-  summarise(gasto_por_mes = sum(Monto_total), .groups = "drop")
- 
-# Para evaluar el gasto acumulado:
-
-datos_mensual <- datos_mensual %>%
-  arrange(mes) %>%
-  group_by(Rango_edad) %>%
-  mutate(Gasto_acumulado = cumsum(gasto_por_mes)) %>%
-  ungroup() %>%
-  filter(mes != "2024-01-01")
-
 
 ggplot(datos_mensual,
        aes(x = mes,
@@ -324,6 +324,7 @@ ggplot(retail,
            fill = Rango_edad)) +
   geom_boxplot(color = "black") + 
   scale_y_continuous(labels = scales::label_dollar(bigmark = ",")) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.1))) +
   scale_fill_manual(
     values = c("Adulto joven (18-26)" = "#003F5D", 
                "Adulto (27-35)" = "#00527C",
@@ -333,27 +334,125 @@ ggplot(retail,
   ) + 
   labs(title = "Distribución de gasto acumulado por segmento Etario",
        subtitle = "Análisis de la distribución del gasto acumulado por grupo Etario en el año 2023",
-       y = "Gasto acumulado",
-       fill = "Rangos de edad:") +
+       x = "Segmento Etario",
+       y = "Gasto acumulado",) +
   theme_minimal() +
   theme(
     plot.title.position = "plot",
     plot.title = element_text(face = "bold", size = 15, hjust = 0.5, color = "#182942"),
     plot.subtitle = element_text(face = "bold", size = 12, hjust = 0.5, color = "#152d4f"),
     
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold", size = 9),
-    legend.text = element_text(face = "bold", size = 9),
-    legend.box.spacing = unit(0, "pt"),
+    legend.position = "none",
     
-    axis.title.y = element_text(face = "bold", size = 12),
-    axis.title.x = element_text(face = "bold", size = 12),
+    axis.title.y = element_text(face = "bold", size = 15),
+    axis.title.x = element_text(face = "bold", size = 15, margin = margin(t = 10)),
     axis.text = element_text(color = "black"),
+    axis.text.x = element_text(size = 10, face = "bold"),
     
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
   ) +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE, title.position = "left"))
 
-# Tercer Objetivo
+# Cuarto Objetivo
 
+preferencias <- retail %>%
+  group_by(Genero, Rango_edad, Categoria_producto) %>%
+  summarise(total_elecciones = n(), .groups = "drop") %>%
+  mutate(Porcentaje_preferencia = (total_elecciones / sum(total_elecciones) * 100))
+
+ggplot(preferencias,
+       aes(x = Categoria_producto,
+           y = Rango_edad,
+           fill = Porcentaje_preferencia)) +
+  geom_tile(color = "black", linewidth = 0.1) +
+  geom_text(aes(label = sprintf("%.2f%%", Porcentaje_preferencia)),
+            color = ifelse(preferencias$Porcentaje_preferencia > 3.25, "black", "white"),
+            size = 3, fontface = "bold",) +
+  facet_wrap(~Genero) +
+  scale_fill_gradient2(
+    low = "#02093d",
+    mid = "gray90",
+    high = "#941929",
+    midpoint = 3.25,
+    labels = function(x) paste0(x, "%")
+  ) + 
+  labs(title = "Intensidad de preferencia",
+       subtitle = "Intensidad de preferencia por segmento demográfico en el año 2023",
+       y = "Segmento Etario",
+       x = "Categoria de Producto",
+       fill = "Porcentaje de preferencia") +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5, color = "#07073d"),
+    plot.subtitle = element_text(face = "bold", size = 12, hjust = 0.5, color = "#08084d"),
+ 
+    legend.title = element_text(face = "bold", size = 9, hjust = 0.5),
+    legend.text = element_text(face = "bold", size = 9, hjust = 0.5),
+    legend.title.align = 0.5,
+    
+    strip.background = element_rect(fill = "gray80", color = NA),
+    strip.text = element_text(face = "bold", size = 12),
+    
+    axis.title.x = element_text(face = "bold", size = 13),
+    axis.title.y = element_text(face = "bold", size = 13),
+    axis.text = element_text(face = "plain", color = "black"),
+    
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) 
+
+# Quinto objetivo:
+
+retail <- retail %>%
+  mutate(segmento = ifelse(Monto_total >= 300, "Premium", "Estandar"))
+
+perfiles_premium <- retail %>%
+  group_by(Rango_edad, segmento) %>%
+  summarise(
+    Total_ventas = n(),
+    Monto_total = sum(Monto_total),
+    .groups = 'drop'
+  ) %>%
+  group_by(Rango_edad) %>%
+  mutate(Porcentaje_por_segmento = (Monto_total / sum(Monto_total)) * 100) %>%
+  ungroup() %>%
+  mutate(Porcentaje_global = (Monto_total / sum(Monto_total)) * 100)
+
+ggplot(perfiles_premium,
+       aes(x = Rango_edad,
+           y = Monto_total,
+           fill = segmento)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::label_dollar(bigmark = ","),
+                     expand = expansion(mult = c(0, 0.05))) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.1))) +
+  scale_fill_manual(
+    values = c(Estandar = "#436EEE", Premium = "#27408B")) +
+  labs(title = "Contraste de Total gastado por Rango de edad y segmentación",
+       subtitle = "Análisis del contraste que hay entre las compras Premium y el Rango de edad en el año 2023",
+       x = "Segmento Etario",
+       y = "Total gastado",
+       fill = "Segmento:") +
+  theme_minimal() +
+  theme(
+    plot.title.position = "plot",
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    plot.subtitle = element_text(face = "bold", size = 12, hjust = 0.5),
+    
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold", size = 9),
+    legend.text = element_text(face = "bold", size = 9),
+    legend.box.spacing = unit(0, "pt"),
+    
+    axis.title.x = element_text(face = "bold", size = 14, margin = margin(t = 10)),
+    axis.title.y = element_text(face = "bold", size = 14),
+    axis.text = element_text(face = "plain", color = "black"),
+    axis.line.x = element_line(color = "#4876FF", size = 0.8),
+    
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+  
