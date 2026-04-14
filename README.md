@@ -1,34 +1,66 @@
-# Análisis Transaccional de venta minorista: Comportamiento y Rentabilidad del Cliente
+# 🛒 Retail: Análisis de Datos y Dashboard de Ventas 
 
-# Planteamiento del Problema
-Rentabilidad de la venta minorista mediante el análisis de la segmentación demográfica y el comportamiento de las transacciones 
+## 📝 Descripción del Proyecto
+Este proyecto presenta un análisis exploratorio y descriptivo de una base de datos del sector retail. El objetivo principal es examinar el impacto de las características demográficas de los clientes sobre el comportamiento de compra, la preferencia de categorías de productos y el volumen total de facturación.
 
-En el sector minorista, conocer el volumen general de ventas no es suficiente; el verdadero valor estratégico radica en entender qué perfiles de clientes generan esas ventas. 
+---
 
-En lo que a ventas se refiere, poder conocer no solo la cantidad de ventas sino también qué clientes las produce, genera el mayor valor para una empresa, ya que esta información puede llevar a que se tomen decisiones en función de permitir la entrada de más clientes en los sectores con mejor desempeño. Estas decisiones no solo están basadas en la intuición, sino también basadas en datos, lo que podrá ser de gran ayuda en la inversión en marketing y optimización del Retorno de Inversión (ROI).
+## 📈 Planteamiento del Problema
 
-Por todo lo mencionado, el siguiente informe busca responder la pregunta: ¿Cuáles son los grupos demográficos que generan mayor rentabilidad y más transacciones en la tienda minorista?.
+### Impacto de las Características del cliente en la Facturación
+En lo que a ventas se refiere, poder conocer no solo la cantidad de ventas, sino también qué clientes generan el mayor valor para una empresa es fundamental. Esta información permite tomar decisiones estratégicas enfocadas en atraer y retener a los clientes de los sectores con mejor desempeño, no solo basadas en la intuición, sino ahora también basadas en datos reales.
 
-# Objetivos Específicos
+---
 
-A continuación, se abordan los objetivos específicos que se analizarán en este informe:
+## 🎯 Objetivos del Proyecto
 
-* 1.- Comparar el ticket promedio entre ambos géneros para identificar diferencias del poder adquisitivo.
-El ticket es uno de los indicadores más importantes en el mundo de las ventas. Por lo tanto, es de vital importancia saber si un género es más propenso a gastar más dinero es importante para la planificación financiera del negocio.
+### Objetivo General
+Analizar los patrones demográficos y el comportamiento de compra en los registros transaccionales para caracterizar su impacto en la facturación.
 
-* 2.-Identificar el grupo etario que más ingreso acumulado genera.
-Se debe tomar en cuenta que este objetivo busca saber cual grupo de edad es el que más dinero le da a la empresa. Un grupo de edad puede hacer muchas compras con pocos productos, mientras que otro puede hacer pocas compras con muchos productos.
+### Objetivos Específicos
+1. **Análisis de Ticket Promedio:** Determinar si existe una variación significativa en el monto promedio de facturación por visita entre hombres y mujeres.
+2. **Preferencias por Categoría:** Analizar cómo influye la edad de manera directa en la elección de la categoría del producto (Ropa, Belleza, Electrónica).
+3. **Análisis de Artículos Premium:** Contrastar la tendencia de compra de artículos de lujo (>$300) según los distintos rangos de edad.
+4. **Segmentación de Ingresos:** Identificar qué rango de edad representa el mayor volumen de ingresos acumulados (el motor financiero del negocio).
+5. **Relación entre Volumen y Rentabilidad:** Comprobar si el segmento demográfico que realiza la mayor cantidad de transacciones es exactamente el mismo que deja la mayor cantidad de dinero.
 
-* 3.- Analizar si el perfil demográfico que hace más transacciones es el que genera más dinero.
-Es fundamental entender si el mayor tráfico de clientes significa que entra más dinero. Esto nos permite conseguir eficiencia operativa. Si un segmento representa el 40% de las transacciones totales pero representa el 10% de todo el dinero, la empresa puede implementar medidas en donde se les dé más prioridad a otro segmento que genere más dinero
+---
 
-* 4.- Determinar si el género influye en la elección categoría del producto (Ropa, Belleza, Electrónica).
-Es importante saber la intención de compra de los clientes, ya que nos permite entender como el cliente elige la categoría que va a comprar según su género. Esto nos permite hacer una publicidad segmentada, la cual es importante ya que ayuda a la empresa a no gastar dinero en publicitar un producto el cual estadísticamente no se consume por un segmento.
+## 💻 Aspectos Técnicos y Tecnologías
 
-# Alumnos               
-Radamés Montiel        
-Rafael Ferrer          
+El análisis y la aplicación fueron desarrollados utilizando el siguiente stack tecnológico:
 
-# Profesores
-Jesús Ochoa        
-Oliver Triveño        
+* **Lenguaje:** Python 3.14.3
+* **Entorno:** Jupyter Notebook
+* **Manipulación y Limpieza de Datos:** Pandas
+* **Visualización Interactiva:** Plotly Express
+* **Dashboard:** Streamlit
+
+---
+
+## 📸 Vista Previa del Dashboard 
+
+<img width="1324" height="1459" alt="image" src="https://github.com/user-attachments/assets/5c857a6c-a95a-4d08-b383-8a95ee3ba604" />
+
+---
+
+## 🌐 Demo en Vivo
+
+Puedes explorar todas las funcionalidades del dashboard interactivo directamente en tu navegador sin necesidad de instalación local.
+
+[🔗 **Ver Proyecto Desplegado en Streamlit**](https://Retail-Ucv-2026.streamlit.app/)
+
+[🔗 **Ver Proyecto Desplegado en Render**](https://analisis-de-inventario-de-producto.onrender.com/)
+
+---
+
+## 👥 Equipo de Desarrollo             
+* Radames Montiel   
+* Rafael Ferrer    
+
+## 🙏 Profesores Guía
+* Jesus Ochoa        
+* Oliver Triveño
+
+---
+*Desarrollado con ❤️ en la Universidad Central de Venezuela (UCV) - 2026*
