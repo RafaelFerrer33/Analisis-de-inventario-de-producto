@@ -212,7 +212,7 @@ with tab4:
     fig3 = px.bar(porcentaje_tipo_filtrado, x='Rango_Edad', y='Porcentaje', color='Tipo de Producto',
                 barmode='group', text_auto='.2f', title='Económico vs Premium por Rango',
                 labels={'Rango_Edad': 'Rango de Edad', 'Porcentaje': 'Porcentaje (%)', 'Tipo de Producto': 'Gama de Producto'},
-                color_discrete_map={'Económico': 'Green', 'Premium': 'darkblue'}
+                color_discrete_map={'Económico': 'silver ', 'Premium': 'gold'}
                 )
 
 
