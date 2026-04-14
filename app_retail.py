@@ -5,7 +5,7 @@ import plotly.express as px
 # 1. Configuración Inicial y Carga de Datos
 st.set_page_config(page_title="Dashboard Retail", layout="wide")
 st.title("Retail: Comportamiento del Cliente y Ventas")
-st.write("En lo que a ventas se refiere, poder conocer no solo la cantidad de ventas sino también qué clientes las producen, generan el mayor valor para una empresa, ya que esta información puede llevar a tomar decisiones en función de permitir la entrada de mayor cantidad de clientes en los sectores con mejor desempeño, no solo basadas en la intuición, sino ahora también basadas en datos reales, lo que podrá ser de gran ayuda en la inversión en marketing y en la optimización del Retorno de Inversión.")
+st.write("Este proyecto presenta un análisis exploratorio y descriptivo de una base de datos del sector retail. El objetivo principal es examinar el impacto de las características demográficas de los clientes sobre el comportamiento de compra, la preferencia de categorías de productos y el volumen total de facturación.")
 
 
   # Creación de columnas y agrupación de datos
@@ -154,7 +154,7 @@ with tab2:
 
     st.plotly_chart(fig1)
 
-    st.info("Observación de datos: El ticket promedio de compra es prácticamente idéntico entre hombres (\$455.43) y mujeres (\$456.55).")
+    st.info( "📊 **Observación de datos:** El ticket promedio de compra es prácticamente idéntico entre hombres (\\$455.43) y mujeres (\\$456.55).")
 
     with st.expander("Conclusión"):
         st.success("Tras analizar las transacciones, se concluye que el género del cliente no es un factor que determine o altere el monto promedio gastado por visita.")
@@ -237,7 +237,7 @@ with tab5:
 
     st.plotly_chart(fig4)
 
-    st.info("📊 **Observación de datos:** El grupo de adultos entre 36 y 50 años generó el mayor volumen de facturación total (\$139,660), superando ampliamente al segmento de 18-25 años (\$84,550).")
+    st.info("📊 **Observación de datos:** El grupo de adultos entre 36 y 50 años generó el mayor volumen de facturación total (\\$139,660), superando ampliamente al segmento de 18-25 años (\\$84,550).")
 
     with st.expander("💡 Ver Conclusión"):
         st.success("Aunque los jóvenes compran más artículos Premium en proporción, los adultos de 36 a 50 años se consolidan como el verdadero motor financiero del negocio gracias a un mayor volumen operativo de transacciones.")
