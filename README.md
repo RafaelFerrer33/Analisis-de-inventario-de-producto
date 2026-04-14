@@ -40,7 +40,7 @@ El análisis y la aplicación fueron desarrollados utilizando el siguiente stack
 
 ## 📸 Vista Previa del Dashboard 
 
-<img width="1324" height="1459" alt="image" src="https://github.com/user-attachments/assets/5c857a6c-a95a-4d08-b383-8a95ee3ba604" />
+<img width="1324" height="1433" alt="image" src="https://github.com/user-attachments/assets/123c5cf1-793a-4b1e-8661-d1a9d15edd15" />
 
 ---
 
