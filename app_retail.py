@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# 1. Configuración Inicial y Carga de Datos
+# Configuración Inicial y Carga de Datos
 st.set_page_config(page_title="Dashboard Retail", layout="wide")
 st.title("Retail: Comportamiento del Cliente y Ventas")
 st.write("Este proyecto presenta un análisis exploratorio y descriptivo de una base de datos del sector retail. El objetivo principal es examinar el impacto de las características demográficas de los clientes sobre el comportamiento de compra, la preferencia de categorías de productos y el volumen total de facturación.")
@@ -40,7 +40,7 @@ df = columnasyrangos()
 
 
 
-# Creamos las 4 columnas
+# Creamos 4 columnas
 col1, col2, col3, col4 = st.columns(4)
 
 # Tarjeta 1: Total de Transacciones
@@ -78,7 +78,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Tabla de datos", "Ticket Promedio
 
 with tab1:
     st.subheader("📋 Tabla de datos")
-    # 1. Creamos el Selectbox con las opciones
+    # Creamos el Selectbox con las opciones
     filtro_categoria = st.selectbox(
         "Filtrar transacciones por categoría:",
         ["Todas las categorías", "Belleza", "Ropa", "Electrónica"],
@@ -91,7 +91,7 @@ with tab1:
      #Filtramos el df original donde la columna coincida con la selección
          df_filtrado = df[df['Product Category'] == filtro_categoria]
 
-    # Mostramos un pequeño texto indicando cuántos registros encontró
+    # Texto indicando cuántos registros encontró
     st.caption(f"Mostrando {len(df_filtrado)} transacciones correspondientes a: **{filtro_categoria}**")
     df_Trad = df_filtrado.rename(columns={
         'Date': 'Fecha',
@@ -106,7 +106,7 @@ with tab1:
 
 
 
-    # 4. Mostramos la tabla interactiva TRADUCIDA
+    # Mostramos la tabla interactiva
     with st.container(border=True):
         st.dataframe(df_Trad, use_container_width=True)
 
@@ -130,17 +130,23 @@ with tab1:
 
 
 with tab2:
-# 1. Creamos el menú de selección múltiple (por defecto mostramos ambos)
+# Creamos el menú de selección múltiple
     generos_seleccionados = st.multiselect(   "Selecciona el género a visualizar:",
          options=["Femenino", "Masculino"],
          default=["Femenino", "Masculino"] )
-# 2. Calculamos los datos
+# Calculamos los datos
     ticket_genero = df.groupby('Gender')['Total Amount'].mean().round(2).reset_index()
 
 
-# 4. Hacemos el gráfico con la tabla filtrada
+    with st.expander("📈 Ver Estadísticas Descriptivas"):
+           st.write("Estadísticas del monto gastado (Total Amount) por género:")
+           stats_obj1 = df[df['Gender'].isin(generos_seleccionados)].groupby('Gender')['Total Amount'].describe()
+           st.dataframe(stats_obj1, use_container_width=True)
+
+
+    # Hacemos el gráfico con la tabla filtrada
     fig1 = px.bar(
-        ticket_genero, # Usamos la nueva tabla filtrada
+        ticket_genero,
         x='Gender',
         y='Total Amount',
         color='Gender',
@@ -149,7 +155,7 @@ with tab2:
         color_discrete_map={'Femenino': 'lightpink', 'Masculino': 'darkblue'},
         labels={'Gender': 'Género', 'Total Amount': 'Ticket Promedio ($)'})
 
-    # 3. Filtramos la tabla según lo que el usuario eligió en el menú
+    # Filtramos la tabla según lo que el usuario eligió en el menú
     ticket_genero_filtrado = ticket_genero[ticket_genero['Gender'].isin(generos_seleccionados)]
 
     st.plotly_chart(fig1)
@@ -162,10 +168,10 @@ with tab2:
     st.divider()
 
 with tab3:
-    # --- OBJETIVO 2: Edad y Categoría de Producto ---
+    # Edad y Categoría de Producto 
     st.header("2. Preferencias de categoría por edad")
 
-    Catogorias_seleccionadas = st.multiselect(   "Selecciona la categoria a visualizar:",
+    Categorias_seleccionadas = st.multiselect(   "Selecciona la categoria a visualizar:",
          options=["Ropa", "Electrónica", "Belleza"],
          default=["Ropa", "Electrónica", "Belleza"])
 
@@ -174,11 +180,19 @@ with tab3:
     pref_edades = df.groupby('Grupo Etario')['Product Category'].value_counts(normalize=True).reset_index(name='Porcentaje')
     pref_edades['Porcentaje'] = (pref_edades['Porcentaje'] * 100).round(2)
 
-    pref_edades_filtrado = pref_edades[pref_edades['Product Category'].isin(Catogorias_seleccionadas)]
+    pref_edades_filtrado = pref_edades[pref_edades['Product Category'].isin(Categorias_seleccionadas)]
+
+
+    with st.expander("📈 Ver Estadísticas Descriptivas"):
+        st.write("Estadísticas del gasto según el Grupo Etario para las categorías seleccionadas:")
+        stats_obj2 = df[df['Product Category'].isin(Categorias_seleccionadas)].groupby('Grupo Etario')['Total Amount'].describe()
+        st.dataframe(stats_obj2, use_container_width=True)
+
 
 
     fig2 = px.bar(pref_edades_filtrado, x='Product Category', y='Porcentaje', color='Grupo Etario',
-                barmode='group', text_auto='.2f', title='Preferencia por Categoría (%)',
+                barmode='group', text_auto='.2f', title='Preferencia por Categoría (%)', 
+                color_discrete_map={'40 o Menor': 'skyblue', 'Mayor a 40': 'darkblue'},
                 labels={'Product Category': 'Categoría de Producto', 'Porcentaje': 'Porcentaje (%)'} 
     )
 
@@ -196,7 +210,7 @@ with tab3:
 
 
 with tab4:
-    # --- OBJETIVO 3: Tendencia a Productos Premium ---
+    # Tendencia a Productos Premium
     st.header("3. Tendencia de Consumo Premium por Edad")
     porcentaje_tipo = df.groupby('Rango_Edad')['Tipo de Producto'].value_counts(normalize=True).reset_index(name='Porcentaje')
     porcentaje_tipo['Porcentaje'] = (porcentaje_tipo['Porcentaje'] * 100).round(2)
@@ -209,10 +223,16 @@ with tab4:
 
     porcentaje_tipo_filtrado = porcentaje_tipo[porcentaje_tipo['Tipo de Producto'].isin(tipo_prod)]
 
+
+    with st.expander("📈 Ver Estadísticas Descriptivas"):
+        st.write("Distribución matemática del Precio Unitario según la gama del producto:")
+        stats_obj3 = df[df['Tipo de Producto'].isin(tipo_prod)].groupby('Tipo de Producto')['Price per Unit'].describe()
+        st.dataframe(stats_obj3, use_container_width=True)
+
     fig3 = px.bar(porcentaje_tipo_filtrado, x='Rango_Edad', y='Porcentaje', color='Tipo de Producto',
                 barmode='group', text_auto='.2f', title='Económico vs Premium por Rango',
                 labels={'Rango_Edad': 'Rango de Edad', 'Porcentaje': 'Porcentaje (%)', 'Tipo de Producto': 'Gama de Producto'},
-                color_discrete_map={'Económico': 'silver ', 'Premium': 'gold'}
+                color_discrete_map={'Económico': 'skyblue', 'Premium': 'darkblue'}
                 )
 
 
@@ -228,11 +248,19 @@ with tab4:
 
 
 with tab5:
-    # --- OBJETIVO 4: Ingresos Acumulados ---
+    # Ingresos Acumulados
     st.header("4. Distribución de ingresos por edad")
+
+    with st.expander("📈 Ver Estadísticas Descriptivas"):
+        st.write("Resumen estadístico del monto facturado por cada Rango de Edad:")
+        stats_obj4 = df.groupby('Rango_Edad')['Total Amount'].describe()
+        st.dataframe(stats_obj4, use_container_width=True)
+
     fig4 = px.pie(df, values='Total Amount', names='Rango_Edad', hole=0.4,
+                color='Rango_Edad',
                 title='Volumen de Ingresos Acumulados',
-                labels={'Rango_Edad': 'Rango de Edad', 'Total Amount': 'Ingresos Acumulados ($)'}
+                labels={'Rango_Edad': 'Rango de Edad', 'Total Amount': 'Ingresos Acumulados ($)'},
+                color_discrete_map={'18-25': 'lightblue', '26-35': 'deepskyblue', '36-50': 'royalblue', '51+': 'navy'}
                 )
 
     st.plotly_chart(fig4)
@@ -248,7 +276,7 @@ with tab5:
 
 
 with tab6:
-    # --- OBJETIVO 5: Transacciones vs Ingresos ---
+    # Transacciones vs Ingresos
     st.header("5. Actividad vs Rentabilidad por Segmento")
 
     transacciones = df.groupby(['Rango_Edad', 'Gender']).size().reset_index(name='Cantidad')
@@ -265,12 +293,19 @@ with tab6:
     trans_filtradas = transacciones[transacciones['Gender'].isin(generos_seleccionados)]
     ingresos_filtrados = ingresos[ingresos['Gender'].isin(generos_seleccionados)]
 
+
+    with st.expander("📈 Ver Estadísticas Descriptivas"):
+        st.write("Estadísticas detalladas cruzando Edad y Género:")
+        stats_obj5 = df[df['Gender'].isin(generos_seleccionados)].groupby(['Rango_Edad', 'Gender'])['Total Amount'].describe()
+        st.dataframe(stats_obj5, use_container_width=True)
+
     col1, col2 = st.columns(2)
 
     with col1:
         fig5_1 = px.bar(trans_filtradas, x='Rango_Edad', y='Cantidad', color='Gender',
                         barmode='group', title='Volumen de Transacciones',
-                        labels={'Rango_Edad': 'Rango de Edad', 'Cantidad': 'N.° de Transacciones', 'Gender': 'Género'}
+                        labels={'Rango_Edad': 'Rango de Edad', 'Cantidad': 'N.° de Transacciones', 'Gender': 'Género'},
+                        color_discrete_map={'Femenino': 'lightpink', 'Masculino': 'darkblue'}
                         ) 
         st.plotly_chart(fig5_1, use_container_width=True)
 
@@ -278,7 +313,8 @@ with tab6:
 
         fig5_2 = px.bar(ingresos_filtrados, x='Rango_Edad', y='Total Amount', color='Gender',
                         barmode='group', title='Ingresos Totales ($)',
-                        labels={'Rango_Edad': 'Rango de Edad', 'Total Amount': 'Ingresos ($)', 'Gender': 'Género'}
+                        labels={'Rango_Edad': 'Rango de Edad', 'Total Amount': 'Ingresos ($)', 'Gender': 'Género'},
+                        color_discrete_map={'Femenino': 'lightpink', 'Masculino': 'darkblue'}
                 )
         st.plotly_chart(fig5_2)
 
