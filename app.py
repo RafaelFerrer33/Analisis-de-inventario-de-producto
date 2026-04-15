@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
+
+
+
 
 # Configuración Inicial y Carga de Datos
 st.set_page_config(page_title="Dashboard Retail", layout="wide")
@@ -11,7 +15,11 @@ st.write("Este proyecto presenta un análisis exploratorio y descriptivo de una 
   # Creación de columnas y agrupación de datos
 @st.cache_data
 def columnasyrangos():
-    df = pd.read_csv('Retail_Limpio.csv')
+    directorio_actual = os.path.dirname(os.path.abspath(__file__))
+    ruta_csv = os.path.join(directorio_actual, 'data', 'clean', 'Retail_Limpio.csv')
+
+    df = pd.read_csv(ruta_csv)
+
 
     # Objetivo 2: Preparación de columna Grupo Etario
     df['Grupo Etario'] = 'Mayor a 40'
