@@ -30,10 +30,11 @@ Analizar los patrones demográficos y el comportamiento de compra en los registr
 
 El análisis y la aplicación fueron desarrollados utilizando el siguiente stack tecnológico:
 
-* **Lenguaje:** Python 3.14.3
+* **Lenguaje:** Python 3.14.3, R 4.5.2
 * **Entorno:** Jupyter Notebook
-* **Manipulación y Limpieza de Datos:** Pandas
+* **Manipulación y Limpieza de Datos:** Pandas, Dplyr, Lubridate
 * **Visualización Interactiva:** Plotly Express
+* **Visualización informativa**: Ggplot2
 * **Dashboard:** Streamlit
 
 ---
@@ -52,14 +53,16 @@ Puedes explorar todas las funcionalidades del dashboard interactivo directamente
 
 [🔗 **Ver Proyecto Desplegado en Render**](https://analisis-de-inventario-de-producto.onrender.com/)
 
+[🔗 **Ver informe**](https://drive.google.com/file/d/1ZICQcrH_0gGjUd1wycpVt_R2ea07MRt_/view)
+
 ---
 
 ## 👥 Equipo de Desarrollo             
-* Radames Montiel   
+* Radamés Montiel   
 * Rafael Ferrer    
 
 ## 🙏 Profesores Guía
-* Jesus Ochoa        
+* Jesús Ochoa        
 * Oliver Triveño
 
 ---
